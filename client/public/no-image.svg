@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500" role="img" aria-label="No image">
+  <rect width="400" height="500" fill="#e7e0d4"/>
+  <rect x="40" y="40" width="320" height="420" rx="16" fill="#f2eee6" stroke="#3d6b58" stroke-opacity="0.25" stroke-width="2"/>
+  <circle cx="200" cy="200" r="48" fill="none" stroke="#1f3d32" stroke-opacity="0.35" stroke-width="4"/>
+  <path d="M140 320 L180 260 L210 290 L250 230 L280 320 Z" fill="#1f3d32" fill-opacity="0.2"/>
+  <text x="200" y="380" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="18" fill="#1f3d32" fill-opacity="0.55">No image</text>
+  <text x="200" y="406" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="12" fill="#1f3d32" fill-opacity="0.4">Not uploaded on API</text>
+</svg>
