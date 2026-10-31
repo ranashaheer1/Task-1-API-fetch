@@ -71,6 +71,35 @@ a.rounded-full.bg-forest,
   background-color: #16a34a;
 }
 
+/* Hero secondary CTA — keep "Shop collection" unchanged */
+.hero-browse-btn {
+  background-color: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+.hero-browse-btn:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Mobile hamburger — black on light header */
+.hamburger-btn {
+  color: #111111;
+  z-index: 50;
+}
+
+/* Mobile drawer fallbacks (inline styles are primary for Vercel) */
+.mobile-nav-drawer {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+.mobile-nav-drawer a {
+  color: #111111;
+}
+.mobile-nav-drawer a:hover {
+  color: #0f766e;
+}
+
 img {
   max-width: 100%;
   display: block;

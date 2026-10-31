@@ -81,7 +81,7 @@ export default function HomePage() {
             </Link>
             <Link
               to="/categories"
-              className="inline-flex items-center gap-2 rounded-full border border-bone/40 px-5 py-3 text-sm font-semibold text-bone transition hover:bg-bone/10"
+              className="hero-browse-btn inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition"
             >
               Browse categories
             </Link>

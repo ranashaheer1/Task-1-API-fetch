@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Menu, Search, ShoppingBag, User, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -21,16 +22,215 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  return (
-    <header className="sticky top-0 z-50 border-b border-ink/8 bg-[#f7f4ee]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 lg:px-6">
+  useEffect(() => {
+    if (!open) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  const mobileMenu =
+    open &&
+    createPortal(
+      <div
+        className="mobile-menu-root md:hidden"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+        }}
+      >
+        {/* Overlay — black 50% */}
         <button
           type="button"
-          className="rounded-lg p-2 text-ink md:hidden"
+          aria-label="Close menu"
+          onClick={() => setOpen(false)}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+          }}
+        />
+
+        {/* Drawer — solid white, 280px, full height */}
+        <aside
+          className="mobile-nav-drawer"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 280,
+            height: '100%',
+            backgroundColor: '#ffffff',
+            color: '#111111',
+            boxShadow: '4px 0 24px rgba(0, 0, 0, 0.18)',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 24,
+            zIndex: 1,
+            overflowY: 'auto',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 24,
+            }}
+          >
+            <span
+              className="font-display"
+              style={{ fontSize: 20, fontWeight: 700, color: '#111111' }}
+            >
+              Farstack
+            </span>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                border: '1px solid #e5e5e5',
+                backgroundColor: '#ffffff',
+                color: '#111111',
+                cursor: 'pointer',
+                zIndex: 2,
+              }}
+            >
+              <X size={22} color="#111111" strokeWidth={2.5} />
+            </button>
+          </div>
+
+          <form onSubmit={onSearch} style={{ marginBottom: 20 }}>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search…"
+              style={{
+                width: '100%',
+                borderRadius: 12,
+                border: '1px solid rgba(17,17,17,0.15)',
+                backgroundColor: '#ffffff',
+                color: '#111111',
+                padding: '10px 12px',
+                fontSize: 14,
+                outline: 'none',
+              }}
+            />
+          </form>
+
+          <nav
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              fontSize: 16,
+              fontWeight: 500,
+            }}
+          >
+            {[
+              ['/', 'Home'],
+              ['/shop', 'Shop'],
+              ['/categories', 'Categories'],
+              ['/cart', 'Cart'],
+              ['/orders', 'Orders'],
+              ['/account', 'Account'],
+            ].map(([to, label]) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setOpen(false)}
+                style={{
+                  color: '#111111',
+                  textDecoration: 'none',
+                  padding: '10px 8px',
+                  borderRadius: 8,
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+
+            {isAuthenticated ? (
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  setOpen(false);
+                }}
+                style={{
+                  marginTop: 8,
+                  textAlign: 'left',
+                  padding: '10px 8px',
+                  borderRadius: 8,
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#b42318',
+                  fontSize: 16,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                Log out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                style={{
+                  marginTop: 8,
+                  color: '#0f766e',
+                  textDecoration: 'none',
+                  padding: '10px 8px',
+                  borderRadius: 8,
+                }}
+              >
+                Log in
+              </Link>
+            )}
+          </nav>
+        </aside>
+      </div>,
+      document.body
+    );
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-ink/8 bg-[#f7f4ee]/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 lg:px-6">
+        <button
+          type="button"
+          className="hamburger-btn md:hidden"
           aria-label="Open menu"
           onClick={() => setOpen(true)}
+          style={{
+            position: 'relative',
+            zIndex: 50,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 44,
+            height: 44,
+            flexShrink: 0,
+            borderRadius: 8,
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: '#111111',
+            cursor: 'pointer',
+          }}
         >
-          <Menu size={20} />
+          {/* Light header → black icon; size 24px */}
+          <Menu size={24} color="#111111" strokeWidth={2.25} />
         </button>
 
         <Link to="/" className="font-display text-2xl font-extrabold tracking-tight text-forest">
@@ -110,56 +310,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {open ? (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <button
-            type="button"
-            className="absolute inset-0 bg-ink/40"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute top-0 left-0 flex h-full w-[82%] max-w-xs flex-col bg-bone p-5 shadow-xl">
-            <div className="mb-6 flex items-center justify-between">
-              <span className="font-display text-xl text-forest">Farstack</span>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close">
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={onSearch} className="mb-5">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search…"
-                className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2 text-sm outline-none"
-              />
-            </form>
-            <div className="flex flex-col gap-3 text-base">
-              <Link to="/" onClick={() => setOpen(false)}>Home</Link>
-              <Link to="/shop" onClick={() => setOpen(false)}>Shop</Link>
-              <Link to="/categories" onClick={() => setOpen(false)}>Categories</Link>
-              <Link to="/cart" onClick={() => setOpen(false)}>Cart</Link>
-              <Link to="/orders" onClick={() => setOpen(false)}>Orders</Link>
-              <Link to="/account" onClick={() => setOpen(false)}>Account</Link>
-              {isAuthenticated ? (
-                <button
-                  type="button"
-                  className="mt-2 text-left text-danger"
-                  onClick={() => {
-                    logout();
-                    setOpen(false);
-                  }}
-                >
-                  Log out
-                </button>
-              ) : (
-                <Link to="/login" onClick={() => setOpen(false)} className="mt-2 text-sea">
-                  Log in
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : null}
+      {mobileMenu}
     </header>
   );
 }
